@@ -1,9 +1,24 @@
+import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+
+@Entity()
 export class Book {
-    private isbn: string;
-    private name: string;
-    private pagesAmount: number;
-    private author: string;
-    private yearOfRelease: number;
+    @PrimaryGeneratedColumn({ type: "integer", name: "id" })
+    private _id: number;
+
+    @Column({ type: "varchar", name: "isbn"})
+    private _isbn: string;
+
+    @Column({ type: "varchar", name: "name" })
+    private _name: string;
+
+    @Column({ type: "integer", name: "pages_amount" })
+    private _pagesAmount: number;
+
+    @Column({ type: "varchar", name: "author" })
+    private _author: string;
+
+    @Column({ type: "integer", name: "year_of_realease" })
+    private _yearOfRelease: number;
 
     constructor(
         name: string, 
@@ -11,20 +26,25 @@ export class Book {
         author: string,
         yearOfRelease: number
     ){
-        this.isbn = crypto.randomUUID();
-        this.name = name;
-        this.pagesAmount = pagesAmount;
-        this.author = author;
-        this.yearOfRelease = yearOfRelease;
+        this._isbn = crypto.randomUUID();
+        this._name = name;
+        this._pagesAmount = pagesAmount;
+        this._author = author;
+        this._yearOfRelease = yearOfRelease;
     }
 
-    getIsbn(): string { return this.isbn; }
+    public get id() {return this._id;}
 
-    getName(): string { return this.name; }
-    setName(name: string): void { this.name = name; }
+    public get isbn(): string { return this._isbn; }
 
-    getPagesAmount(): number { return this.pagesAmount; }
-    getAuthor(): string { return this.author; }
-    getYearOfRealese(): number { return this.yearOfRelease; }
+
+    public get name(): string { return this._name; }
+    public set name(name: string) { this._name = name; }
+
+    public get pagesAmount(): number { return this._pagesAmount; }
+    public get author(): string { return this._author; }
+
+    public set yearOfRealese(yearOfRealese: number) { this._yearOfRelease = yearOfRealese; }
+    public get yearOfRealese(): number { return this._yearOfRelease; }
 
 }
