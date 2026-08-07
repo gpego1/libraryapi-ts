@@ -1,11 +1,26 @@
-import "reflect-metadata"
+import "reflect-metadata";
+import http from "node:http";
 import { AppDataSource } from "./datasource.js";
-import { Book } from "./domain/model/Book.js";
+import dotenv from "dotenv"
 
-let book1 = new Book("Chainsaw Man Vol 23", 144, "Fujimoto", 2025)
-console.log(book1);
-book1.name = "Chainsaw man 22";
-console.log(book1.name);
+dotenv.config();
+const PORT = process.env.PORT;
+
+const server = http.createServer((req, res) => {
+    res.setHeader("Content-Type", "application/json");
+
+    if (req.method === "GET" && req.url === "/api/hello") {
+        res.writeHead(200); // set the response status
+        res.end(JSON.stringify("Hello World")); // set the response body
+        return;
+    }
+
+});
+
+server.listen(PORT, () => {
+    console.log(`Server is up at: ${PORT}`);  
+});
+
 
 AppDataSource.initialize()
 .then(() => {
