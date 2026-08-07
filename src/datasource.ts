@@ -1,8 +1,13 @@
 import { DataSource } from "typeorm";
+import { dirname } from "node:path";
+import { fileURLToPath } from "node:url";
 import { Book } from "./domain/model/Book.js";
 import dotenv from "dotenv"
 
 dotenv.config();
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 export const AppDataSource = new DataSource({
     type: "mysql",
@@ -11,9 +16,9 @@ export const AppDataSource = new DataSource({
     username: `${process.env.MYSQL_USERNAME}`,
     password: `${process.env.MYSQL_PASSWORD}`,
     database: `${process.env.MYSQL_DATABASE}`,
-    synchronize: true,
+    synchronize: false,
     logging: true,
     entities: [Book],
     subscribers: [],
-    migrations: [],
+    migrations: [__dirname + "src/migration/*.js"],
 })
