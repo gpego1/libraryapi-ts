@@ -1,30 +1,40 @@
 import "reflect-metadata";
-import http from "node:http";
-import { AppDataSource } from "./datasource.js";
+import http from "node:http"
 import dotenv from "dotenv"
+import { AppDataSource } from "./datasource.js";
+import { Router } from "./presentation/routes.js";
+import { BookService } from "./services/BookService.js";
+import { BookRoutes } from "./presentation/BookRoutes.js";
+import { Server } from "./server.js";
 
 dotenv.config();
-const PORT = process.env.PORT;
 
-const server = http.createServer((req, res) => {
-    res.setHeader("Content-Type", "application/json");
-
-    if (req.method === "GET" && req.url === "/api/hello") {
-        res.writeHead(200); // set the response status
-        res.end(JSON.stringify("Hello World")); // set the response body
-        return;
-    }
-
-});
-
-server.listen(PORT, () => {
-    console.log(`Server is up at: ${PORT}`);  
-});
-
-
-AppDataSource.initialize()
+await AppDataSource.initialize()
 .then(() => {
     console.log("Database was successfully conected!");
+    console.log(AppDataSource.entityMetadatas.map(metadata => metadata.name));
 }).catch((error) => {
-    console.error(error);
-})
+    throw new Error(error)
+});
+
+
+const router = new Router();
+const port = process.env.PORT;
+const bookService = new BookService();
+const bookRouter = new BookRoutes(
+    bookService
+);
+
+router.get(
+    "/api/books",
+    bookRouter.getAllBooks
+)
+
+
+const server = new Server(router);
+server.start(Number(port));
+
+
+
+
+
